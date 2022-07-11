@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
+import "antd/dist/antd.css";
 import App from "./App";
 import "mapbox-gl/dist/mapbox-gl.css";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
@@ -9,6 +10,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import routes from "./routes";
 
 import HomePage from "./pages/HomePage/index";
+import RegisterPage from "./pages/RegisterPage/index";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -19,6 +21,7 @@ root.render(
     <Routes>
       <Route path="/" element={<App />} />
       <Route path={routes.map} element={<HomePage />} />
+      <Route path={routes.register} element={<RegisterPage />} />
       <Route
         path="*"
         element={
