@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import ReactMapGL, {
   Source,
   Layer,
@@ -6,7 +6,9 @@ import ReactMapGL, {
   Marker,
   Popup,
 } from "react-map-gl";
+import { Avatar } from "antd";
 import userApi from "../../services/userApi";
+import { BASE_ENDPOINT } from "../../config";
 
 // TODO george add info to redux upon sign in / initial load
 const USER_ID = 1;
@@ -14,8 +16,8 @@ const USER_ID = 1;
 const HomePage = () => {
   const [viewport, setViewport] = useState({
     // TODO george change to your own location (add 1st dest on sign up)
-    latitude: 40.7127837,
-    longitude: -74.0059413,
+    latitude: 41.0082,
+    longitude: 28.9784,
     zoom: 10,
   });
   const [markerData, setMarkerData] = useState(null);
@@ -23,7 +25,9 @@ const HomePage = () => {
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
+    // TODO george add info to redux upon sign in / initial load
     // fetchUser();
+    // TODO george pass user id
     fetchFriendDestinations();
   }, []);
 
@@ -165,47 +169,45 @@ const HomePage = () => {
             latitude={locationData.latitude}
             anchor="bottom"
           >
-            <button
+            <Avatar
+              src={`${BASE_ENDPOINT}${itemData.profileImage.data.attributes.url}`}
+              size="large"
               onClick={(e) => {
                 e.preventDefault();
                 setSelectedMarker(itemData);
               }}
-            >
-              <img
-                src={`http://localhost:1337${itemData.profileImage.data.attributes.url}`}
-                alt={`${itemData.profileImage.data.attributes.url}`}
-                style={{ borderRadius: "50%", height: "30px", width: "30px" }}
-              />
-            </button>
+            />
           </Marker>
         );
       });
     }
   }, [markerData]);
 
-  const popUp = (selectedMarker) => {
+  const popUp = useMemo(() => {
     console.log("SEL", selectedMarker);
-    const locationData =
-      selectedMarker.destinations.data[0].attributes.location.data.attributes;
-    return (
-      <Popup
-        longitude={locationData.longitude}
-        latitude={locationData.latitude}
-        anchor="top"
-        onClose={() => setSelectedMarker(null)}
-        closeButton={true}
-        closeOnClick={false}
-      >
-        <img
-          src={`http://localhost:1337${selectedMarker.profileImage.data.attributes.url}`}
-          alt={`${selectedMarker.profileImage.data.attributes.url}`}
-          style={{ borderRadius: "50%", height: "30px", width: "30px" }}
-        />
-        <p>{selectedMarker.fullName}</p>
-        <p>{selectedMarker.email}</p>
-      </Popup>
-    );
-  };
+    if (selectedMarker) {
+      const locationData =
+        selectedMarker.destinations.data[0].attributes.location.data.attributes;
+      return (
+        <Popup
+          longitude={locationData.longitude}
+          latitude={locationData.latitude}
+          anchor="top"
+          onClose={() => setSelectedMarker(null)}
+          closeButton
+          closeOnClick={false}
+        >
+          <Avatar
+            src={`${BASE_ENDPOINT}${selectedMarker.profileImage.data.attributes.url}`}
+            size="large"
+          />
+
+          <p>{selectedMarker.fullName}</p>
+          <p>{selectedMarker.email}</p>
+        </Popup>
+      );
+    }
+  }, [selectedMarker]);
 
   return (
     <ReactMapGL
@@ -229,7 +231,7 @@ const HomePage = () => {
         <Layer {...layerStyle} />
       </Source> */}
       {!isLoading && markers}
-      {selectedMarker && popUp(selectedMarker)}
+      {selectedMarker && popUp}
     </ReactMapGL>
   );
 };
