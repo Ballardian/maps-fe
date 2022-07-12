@@ -86,8 +86,10 @@ const RegisterPage = () => {
     setLoading(true);
     const { username, email, password, fullName, profileImage, location } =
       values;
+    const locationObject = locations.find((item) => item.id === location);
     const profileImageFile = profileImage[0];
     console.log("val", values);
+    console.log("loc", locationObject);
     try {
       const response = await registerApi.registerUser(
         username,
@@ -96,6 +98,7 @@ const RegisterPage = () => {
         fullName
       );
       await registerApi.uploadProfileImage(profileImageFile, response.user.id);
+      // TODO george randomise locationObject.attributes.lat/long and assign to new fields in destination
       await destinationApi.addDestination(response.user.id, location);
       setLoading(false);
     } catch (error) {
