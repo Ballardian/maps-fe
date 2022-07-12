@@ -13,7 +13,7 @@ import { BASE_ENDPOINT } from "../../config";
 // TODO george add info to redux upon sign in / initial load
 const USER_ID = 1;
 
-const HomePage = () => {
+const MapPage = () => {
   const [viewport, setViewport] = useState({
     // TODO george change to your own location (add 1st dest on sign up)
     latitude: 41.0082,
@@ -236,4 +236,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default MapPage;

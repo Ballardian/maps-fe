@@ -6,32 +6,15 @@ import App from "./App";
 import "mapbox-gl/dist/mapbox-gl.css";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import routes from "./routes";
-
-import HomePage from "./pages/HomePage/index";
-import RegisterPage from "./pages/RegisterPage/index";
+import { BrowserRouter } from "react-router-dom";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  // <React.StrictMode>
-  //   <App />
-  // </React.StrictMode>
-  <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<App />} />
-      <Route path={routes.map} element={<HomePage />} />
-      <Route path={routes.register} element={<RegisterPage />} />
-      <Route
-        path="*"
-        element={
-          <main style={{ padding: "1rem" }}>
-            <p>There's nothing here!</p>
-          </main>
-        }
-      />
-    </Routes>
-  </BrowserRouter>
+  <React.StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </React.StrictMode>
 );
 
 // If you want your app to work offline and load faster, you can change
