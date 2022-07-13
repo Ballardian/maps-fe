@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { UploadOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 import {
   AutoComplete,
   Button,
@@ -17,6 +18,7 @@ import {
 import registerApi from "../../services/registerApi";
 import destinationApi from "../../services/destinationApi";
 import locationsApi from "../../services/locationsApi";
+import routes from "../../routes";
 const { Option } = Select;
 
 const formItemLayout = {
@@ -244,9 +246,14 @@ const RegisterPage = () => {
         </Upload>
       </Form.Item>
       <Form.Item {...tailFormItemLayout}>
-        <Button type="primary" htmlType="submit" loading={isLoading}>
-          Register
-        </Button>
+        <Row>
+          <Button type="primary" htmlType="submit" loading={isLoading}>
+            Register
+          </Button>
+        </Row>
+        <Row>
+          <Link to={routes.login}>or login</Link>
+        </Row>
       </Form.Item>
     </Form>
   );

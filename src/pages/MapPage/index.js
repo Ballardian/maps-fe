@@ -8,7 +8,11 @@ import ReactMapGL, {
 } from "react-map-gl";
 import { Avatar } from "antd";
 import userApi from "../../services/userApi";
-import { BASE_ENDPOINT } from "../../config";
+import {
+  BASE_ENDPOINT,
+  MAPBOX_API_TOKEN,
+  MAPBOX_MAP_STYLE,
+} from "../../config";
 
 // TODO george add info to redux upon sign in / initial load
 const USER_ID = 1;
@@ -25,6 +29,8 @@ const MapPage = () => {
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
+    // TODO george remove once log out button ready
+    // localStorage.removeItem("token");
     // TODO george add info to redux upon sign in / initial load
     // fetchUser();
     // TODO george pass user id
@@ -184,6 +190,7 @@ const MapPage = () => {
   }, [markerData]);
 
   const popUp = useMemo(() => {
+    // TODO george why does this run twice?
     console.log("SEL", selectedMarker);
     if (selectedMarker) {
       const locationData =
@@ -213,10 +220,8 @@ const MapPage = () => {
     <ReactMapGL
       {...viewport}
       style={{ width: "100vw", height: "100vh" }}
-      mapStyle="mapbox://styles/georgeballardsoftware/cl5dfdvsh00cy16p3uvsy41u2"
-      mapboxAccessToken={
-        "pk.eyJ1IjoiZ2VvcmdlYmFsbGFyZHNvZnR3YXJlIiwiYSI6ImNsNWRiMTR3djBwcTUzbW9ldGJ1emx4ankifQ.FeOSQ6TxMH9TnHodvsd4zQ"
-      }
+      mapStyle={MAPBOX_MAP_STYLE}
+      mapboxAccessToken={MAPBOX_API_TOKEN}
       onMove={(evt) => setViewport(evt.viewState)}
       reuseMaps
       maxPitch={0}

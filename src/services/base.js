@@ -6,11 +6,11 @@ const api = axios.create({});
 
 // Whenever a request is made, we attach our token in header.
 api.interceptors.request.use((config) => {
-  // TODO george add tokens to localStorage
-  //   const token = localStorage.getItem("token");
-  const token = STRAPI_API_TOKEN;
-  //   const token =
-  //     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjU3NTIzOTc4LCJleHAiOjE2NjAxMTU5Nzh9.wKgU8cv8uGfiCVieHsAGq5CvknWDjxCcl0h2d-7XElA";
+  // TODO george check works without jwt token
+  let token = localStorage.getItem("token");
+  if (!token) {
+    token = STRAPI_API_TOKEN;
+  }
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

@@ -16,3 +16,12 @@ export const IMAGE_UPLOAD_ENDPOINT = `${BASE_API_ENDPOINT}/upload`;
 export const DESTINATIONS_ENDPOINT = `${BASE_API_ENDPOINT}/destinations`;
 
 export const LOCATIONS_ENDPOINT = `${BASE_API_ENDPOINT}/locations`;
+
+export const LOGIN_ENDPOINT = `${BASE_API_ENDPOINT}/auth/local`;
+
+// TODO george move to env variables
+export const MAPBOX_API_TOKEN =
+  "pk.eyJ1IjoiZ2VvcmdlYmFsbGFyZHNvZnR3YXJlIiwiYSI6ImNsNWRiMTR3djBwcTUzbW9ldGJ1emx4ankifQ.FeOSQ6TxMH9TnHodvsd4zQ";
+
+export const MAPBOX_MAP_STYLE =
+  "mapbox://styles/georgeballardsoftware/cl5dfdvsh00cy16p3uvsy41u2";

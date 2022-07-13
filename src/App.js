@@ -10,7 +10,7 @@ import PublicLayout from "./layouts/PublicLayout";
 // Pages
 import MapPage from "./pages/MapPage/index";
 import RegisterPage from "./pages/RegisterPage/index";
-// import LoginPage from "./pages/LoginPage/index";
+import LoginPage from "./pages/LoginPage/index";
 // import YouPage from "./pages/YouPage/index";
 // import FriendPage from "./pages/FriendPage/index";
 
@@ -33,6 +33,15 @@ class App extends React.Component {
             // TODO george replace with authLayout
             <PublicLayout>
               <MapPage />
+            </PublicLayout>
+          }
+        />
+        <Route
+          path={routes.login}
+          element={
+            // TODO george replace with authLayout
+            <PublicLayout>
+              <LoginPage />
             </PublicLayout>
           }
         />
