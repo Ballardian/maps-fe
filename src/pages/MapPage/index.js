@@ -18,6 +18,7 @@ import {
 const USER_ID = 1;
 
 const MapPage = () => {
+  const [user, setUSer] = useState(null);
   const [viewport, setViewport] = useState({
     // TODO george change to your own location (add 1st dest on sign up)
     latitude: 41.0082,
@@ -32,24 +33,29 @@ const MapPage = () => {
     // TODO george remove once log out button ready
     // localStorage.removeItem("token");
     // TODO george add info to redux upon sign in / initial load
-    // fetchUser();
     // TODO george pass user id
+    const userId = localStorage.getItem("id");
+    if (userId) {
+      fetchUser(userId);
+    }
     fetchFriendDestinations();
   }, []);
 
-  //   TODO fire after sign in
-  //   const fetchUser = async () => {
-  //     try {
-  //       const response = await userApi.fetchUser(USER_ID);
-  //       const locationData =
-  //         response.destinations.data[0].attributes.location.data.attributes;
-  //       console.log("res", response);
-  //       //   setMarkerData(response);
-  //       //   setLoading(false);
-  //     } catch (error) {
-  //       console.log("here", error);
-  //     }
-  //   };
+  const fetchUser = async (userId) => {
+    try {
+      const response = await userApi.fetchUser(userId);
+      const locationData = response.destinations[0];
+      console.log("res", response);
+      console.log("loc", locationData);
+      setViewport({
+        latitude: locationData.latitude,
+        longitude: locationData.longitude,
+        zoom: 10,
+      });
+    } catch (error) {
+      console.log("here", error);
+    }
+  };
 
   const fetchFriendDestinations = async () => {
     try {
@@ -158,8 +164,7 @@ const MapPage = () => {
     const itemData = item.attributes.friend.data.attributes;
     // TODO george update for multiple destinations
     const locationData =
-      item.attributes.friend.data.attributes.destinations.data[0].attributes
-        .location.data.attributes;
+      item.attributes.friend.data.attributes.destinations.data[0].attributes;
 
     return [itemId, itemData, locationData];
   };
@@ -193,8 +198,7 @@ const MapPage = () => {
     // TODO george why does this run twice?
     console.log("SEL", selectedMarker);
     if (selectedMarker) {
-      const locationData =
-        selectedMarker.destinations.data[0].attributes.location.data.attributes;
+      const locationData = selectedMarker.destinations.data[0].attributes;
       return (
         <Popup
           longitude={locationData.longitude}
@@ -236,7 +240,7 @@ const MapPage = () => {
         <Layer {...layerStyle} />
       </Source> */}
       {!isLoading && markers}
-      {selectedMarker && popUp}
+      {!isLoading && selectedMarker && popUp}
     </ReactMapGL>
   );
 };

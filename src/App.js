@@ -4,7 +4,7 @@ import "./App.css";
 import { Routes, Route, Navigate } from "react-router-dom";
 import routes from "./routes";
 
-// import AuthLayout from "./layouts/AuthLayout";
+import AuthLayout from "./layouts/AuthLayout";
 import PublicLayout from "./layouts/PublicLayout";
 
 // Pages
@@ -31,27 +31,16 @@ class App extends React.Component {
           path={routes.map}
           element={
             // TODO george replace with authLayout
-            <PublicLayout>
-              <MapPage />
-            </PublicLayout>
+            <AuthLayout children={<MapPage />}></AuthLayout>
           }
         />
         <Route
           path={routes.login}
-          element={
-            // TODO george replace with authLayout
-            <PublicLayout>
-              <LoginPage />
-            </PublicLayout>
-          }
+          element={<PublicLayout children={<LoginPage />}></PublicLayout>}
         />
         <Route
           path={routes.register}
-          element={
-            <PublicLayout>
-              <RegisterPage />
-            </PublicLayout>
-          }
+          element={<PublicLayout childre={<RegisterPage />}></PublicLayout>}
         />
         <Route path="*" element={<Navigate to={routes.map} replace={true} />} />
       </Routes>

@@ -5,7 +5,7 @@ export const BASE_ENDPOINT = "http://localhost:1337";
 
 export const BASE_API_ENDPOINT = `${BASE_ENDPOINT}/api`;
 
-export const USER_ENDPOINT = `${BASE_API_ENDPOINT}/user`;
+export const USER_ENDPOINT = `${BASE_API_ENDPOINT}/users`;
 
 export const FRIENDS_ENDPOINT = `${BASE_API_ENDPOINT}/friends`;
 

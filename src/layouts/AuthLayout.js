@@ -1,31 +1,25 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React from "react";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { Layout, Row, Col, Divider } from "antd";
+import React, { useState, useEffect } from "react";
+import { Layout, Row, Affix, Button } from "antd";
+import { Navigate } from "react-router-dom";
 
-import routes from "../../routes";
-import * as userActions from "../../redux/user";
-import TopNavDropdown from "./TopNavDropdown";
-import ErrorPage from "./ErrorPage";
+import routes from "../routes";
+// import ErrorPage from "./ErrorPage";;
 
-import { colors } from "../../styles/colors";
+import { colors } from "../styles/colors";
 
 const { Header, Content } = Layout;
-// High-level styles for easy customizability
-const DEFAULT_MAX_WIDTH = 1168;
 
-class AuthLayout extends React.Component {
-  state = {
-    error: null,
-    errorStack: null,
-  };
+const AuthLayout = ({ children }) => {
+  const [loggedIn, setLoggedIn] = useState(
+    localStorage.getItem("token") ? true : false
+  );
 
-  componentDidMount() {
+  useEffect(() => {
     window.scrollTo(0, 0);
     if (!localStorage.getItem("token")) {
-      this.onLogout();
+      setLoggedIn(false);
       return;
     }
     // TODO george fix this - refetch user upon refresh
@@ -33,38 +27,20 @@ class AuthLayout extends React.Component {
     // if (user === "") {
     //   initializeUser();
     // }
-    if (localStorage.getItem("user") === "iamgeorgemorris") {
-      this.props.history.push(routes.button);
-    }
-  }
+    // TODO george add to redux
+    // const userId = localStorage.getItem("id");
+    // if (userId) {
+    //   userApi.fetchUser(userId);
+    // }
+  }, []);
 
-  // When user routes away from error page, we should hide the error page
-  componentDidUpdate(prevProps) {
-    if (this.state.error && prevProps.location !== this.props.location) {
-      this.clearError();
-    }
-  }
-
-  onLogout = () => {
-    this.props.logoutUser();
-    this.props.history.push(routes.login);
-  };
-
-  clearError = () => {
-    this.setState({ error: null, errorStack: null });
-  };
-
-  componentDidCatch(error, info) {
-    this.setState({ error, errorStack: info.componentStack });
-  }
-
-  render() {
-    const { history, children, t, logoutUser, maxWidth } = this.props;
-
-    // if (!localStorage.getItem("user")) return <LoadingSpinner />;
-
-    return (
-      <Layout style={{ backgroundColor: "white", height: "100%" }}>
+  return (
+    <>
+      {!loggedIn && <Navigate to={routes.login} replace={true} />}
+      <Layout
+        style={{ backgroundColor: "white", height: "100%", width: "100%" }}
+      >
+        {/* TODO george potentially remove for affixed logo */}
         <Header
           style={{
             position: "fixed",
@@ -72,84 +48,64 @@ class AuthLayout extends React.Component {
             zIndex: 3,
             paddingLeft: 18,
             background: colors.white,
+            // TODO george match to future destination lines
+            borderBottom: `2px dashed ${colors.secondaryText}`,
           }}
-        >
-          <Row
-            type="flex"
-            justify="space-between"
-            align="middle"
-            style={{
-              maxWidth: (maxWidth || DEFAULT_MAX_WIDTH) + 80,
-              margin: "auto",
-              color: "white",
-            }}
-          >
-            <Col
-              span={24}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <div>
-                <TopNavDropdown
-                  t={t}
-                  history={history}
-                  logoutUser={logoutUser}
-                />
-              </div>
-            </Col>
-          </Row>
-          <Divider
-            style={{
-              marginTop: 0,
-            }}
-          />
-        </Header>
+        />
 
         {/* Page content */}
         <Content
           style={{
             width: "100%",
-            margin: "auto",
-            maxWidth: (maxWidth || DEFAULT_MAX_WIDTH) + 100,
-            marginTop: 110,
+            marginTop: 50,
             minHeight: "calc(100vh - 128px)",
-            padding: "0 30px",
           }}
         >
-          {this.state.error ? (
-            <ErrorPage
-              title="Error"
-              subTitle="Sorry! There is an error loading the page"
-              errorStack={this.state.errorStack}
-              onClick={this.clearError}
-            />
-          ) : (
-            <>{children}</>
-          )}
+          {children}
         </Content>
+        {/* TODO george add url check - if maps, dont show maps button */}
+        <Row type="flex">
+          <Affix offsetBottom={30}>
+            <Button
+              onClick={() => <Navigate to={routes.map} replace={true} />}
+              size="small"
+              type="primary"
+              style={{
+                zIndex: 3,
+                marginLeft: 16,
+              }}
+            >
+              Map
+            </Button>
+          </Affix>
+          <Affix offsetBottom={30}>
+            <Button
+              onClick={() => <Navigate to={routes.register} replace={true} />}
+              size="small"
+              type="primary"
+              style={{
+                zIndex: 3,
+                marginLeft: 16,
+              }}
+            >
+              Friends
+            </Button>
+          </Affix>
+          <Affix offsetBottom={30}>
+            <Button
+              size="small"
+              type="primary"
+              style={{
+                zIndex: 3,
+                marginLeft: 16,
+              }}
+            >
+              You
+            </Button>
+          </Affix>
+        </Row>
       </Layout>
-    );
-  }
-}
-
-const mapStateToProps = (state) => {
-  return {
-    user: state.user,
-  };
+    </>
+  );
 };
-
-const mapDispatchToProps = (dispatch) => {
-  const { logoutAction } = userActions;
-  return {
-    logoutUser: () => {
-      dispatch(logoutAction());
-    },
-  };
-};
-
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(AuthLayout)
-);
+export default AuthLayout;

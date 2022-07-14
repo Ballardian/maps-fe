@@ -21,14 +21,14 @@ import routes from "../../routes";
 
 const LoginPage = (props) => {
   const [isLoading, setLoading] = useState(false);
-  const [loggedIn, setloggedIn] = useState(
+  const [loggedIn, setLoggedIn] = useState(
     localStorage.getItem("token") ? true : false
   );
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      setloggedIn(true);
+      setLoggedIn(true);
     }
   }, [loggedIn]);
 
@@ -39,7 +39,8 @@ const LoginPage = (props) => {
       const response = await loginApi.login(username, password);
       const { jwt } = response;
       localStorage.setItem("token", jwt);
-      setloggedIn(true);
+      localStorage.setItem("id", response.user.id);
+      setLoggedIn(true);
       setLoading(false);
     } catch (error) {
       message.error(`Login failed: ${error.message}`);
