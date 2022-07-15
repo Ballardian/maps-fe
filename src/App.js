@@ -11,7 +11,7 @@ import PublicLayout from "./layouts/PublicLayout";
 import MapPage from "./pages/MapPage/index";
 import RegisterPage from "./pages/RegisterPage/index";
 import LoginPage from "./pages/LoginPage/index";
-// import YouPage from "./pages/YouPage/index";
+import YouPage from "./pages/YouPage/index";
 // import FriendPage from "./pages/FriendPage/index";
 
 class App extends React.Component {
@@ -29,10 +29,11 @@ class App extends React.Component {
         />
         <Route
           path={routes.map}
-          element={
-            // TODO george replace with authLayout
-            <AuthLayout children={<MapPage />}></AuthLayout>
-          }
+          element={<AuthLayout children={<MapPage />}></AuthLayout>}
+        />
+        <Route
+          path={routes.you}
+          element={<AuthLayout children={<YouPage />}></AuthLayout>}
         />
         <Route
           path={routes.login}

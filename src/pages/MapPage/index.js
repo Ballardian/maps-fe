@@ -14,9 +14,6 @@ import {
   MAPBOX_MAP_STYLE,
 } from "../../config";
 
-// TODO george add info to redux upon sign in / initial load
-const USER_ID = 1;
-
 const MapPage = () => {
   const [user, setUSer] = useState(null);
   const [viewport, setViewport] = useState({
@@ -43,7 +40,7 @@ const MapPage = () => {
 
   const fetchUser = async (userId) => {
     try {
-      const response = await userApi.fetchUser(userId);
+      const response = await userApi.fetchCurrentUser();
       const locationData = response.destinations[0];
       console.log("res", response);
       console.log("loc", locationData);

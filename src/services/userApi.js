@@ -18,6 +18,11 @@ const fetchUser = async (userId) => {
   return response;
 };
 
+const fetchCurrentUser = async () => {
+  const response = await base.api.get(`${USER_ENDPOINT}/me/?${userQuery}`);
+  return response;
+};
+
 const friendQuery = (userId) => {
   const query = qs.stringify(
     {
@@ -47,4 +52,5 @@ const fetchFriendDestinations = async (userId) => {
 export default {
   fetchUser,
   fetchFriendDestinations,
+  fetchCurrentUser,
 };

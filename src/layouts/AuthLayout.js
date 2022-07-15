@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState, useEffect } from "react";
 import { Layout, Row, Affix, Button } from "antd";
-import { Navigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 
 import routes from "../routes";
 // import ErrorPage from "./ErrorPage";;
@@ -12,6 +12,7 @@ import { colors } from "../styles/colors";
 const { Header, Content } = Layout;
 
 const AuthLayout = ({ children }) => {
+  const navigate = useNavigate();
   const [loggedIn, setLoggedIn] = useState(
     localStorage.getItem("token") ? true : false
   );
@@ -67,7 +68,7 @@ const AuthLayout = ({ children }) => {
         <Row type="flex">
           <Affix offsetBottom={30}>
             <Button
-              onClick={() => <Navigate to={routes.map} replace={true} />}
+              onClick={() => navigate(routes.map)}
               size="small"
               type="primary"
               style={{
@@ -80,7 +81,7 @@ const AuthLayout = ({ children }) => {
           </Affix>
           <Affix offsetBottom={30}>
             <Button
-              onClick={() => <Navigate to={routes.register} replace={true} />}
+              onClick={() => navigate(routes.friends)}
               size="small"
               type="primary"
               style={{
@@ -93,6 +94,7 @@ const AuthLayout = ({ children }) => {
           </Affix>
           <Affix offsetBottom={30}>
             <Button
+              onClick={() => navigate(routes.you)}
               size="small"
               type="primary"
               style={{

@@ -100,8 +100,7 @@ const RegisterPage = () => {
         fullName
       );
       await registerApi.uploadProfileImage(profileImageFile, response.user.id);
-      // TODO george randomise locationObject.attributes.lat/long and assign to new fields in destination
-      await destinationApi.addDestination(response.user.id, location);
+      await destinationApi.addDestination(response.user.id, locationObject);
       setLoading(false);
     } catch (error) {
       message.error(`Registration failed: ${error.message}`);
