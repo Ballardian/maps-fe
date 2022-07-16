@@ -14,14 +14,11 @@ import {
   MAPBOX_MAP_STYLE,
 } from "../../config";
 
+import { destinationStatus } from "../../constants";
+
 const MapPage = () => {
   const [user, setUSer] = useState(null);
-  const [viewport, setViewport] = useState({
-    // TODO george change to your own location (add 1st dest on sign up)
-    latitude: 41.0082,
-    longitude: 28.9784,
-    zoom: 10,
-  });
+  const [viewport, setViewport] = useState(null);
   const [markerData, setMarkerData] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [isLoading, setLoading] = useState(true);
@@ -38,7 +35,7 @@ const MapPage = () => {
     fetchFriendDestinations();
   }, []);
 
-  const fetchUser = async (userId) => {
+  const fetchUser = async () => {
     try {
       const response = await userApi.fetchCurrentUser();
       const locationData = response.destinations[0];
@@ -160,8 +157,11 @@ const MapPage = () => {
     const itemId = item.attributes.friend.data.id;
     const itemData = item.attributes.friend.data.attributes;
     // TODO george update for multiple destinations
+    // TODO george move logic to BE
     const locationData =
-      item.attributes.friend.data.attributes.destinations.data[0].attributes;
+      item.attributes.friend.data.attributes.destinations.data.find(
+        (item) => item.attributes.status === destinationStatus.CURRENT
+      )?.attributes;
 
     return [itemId, itemData, locationData];
   };
@@ -218,27 +218,31 @@ const MapPage = () => {
   }, [selectedMarker]);
 
   return (
-    <ReactMapGL
-      {...viewport}
-      style={{ width: "100vw", height: "100vh" }}
-      mapStyle={MAPBOX_MAP_STYLE}
-      mapboxAccessToken={MAPBOX_API_TOKEN}
-      onMove={(evt) => setViewport(evt.viewState)}
-      reuseMaps
-      maxPitch={0}
-      dragRotate={false}
-    >
-      <NavigationControl
-        visualizePitch={false}
-        showCompass={false}
-        showZoom={false}
-      />
-      {/* <Source id="my-data" type="geojson" data={futurePlans}>
+    <>
+      {viewport && (
+        <ReactMapGL
+          {...viewport}
+          style={{ width: "100vw", height: "100vh" }}
+          mapStyle={MAPBOX_MAP_STYLE}
+          mapboxAccessToken={MAPBOX_API_TOKEN}
+          onMove={(evt) => setViewport(evt.viewState)}
+          reuseMaps
+          maxPitch={0}
+          dragRotate={false}
+        >
+          <NavigationControl
+            visualizePitch={false}
+            showCompass={false}
+            showZoom={false}
+          />
+          {/* <Source id="my-data" type="geojson" data={futurePlans}>
         <Layer {...layerStyle} />
       </Source> */}
-      {!isLoading && markers}
-      {!isLoading && selectedMarker && popUp}
-    </ReactMapGL>
+          {!isLoading && markers}
+          {!isLoading && selectedMarker && popUp}
+        </ReactMapGL>
+      )}
+    </>
   );
 };
 

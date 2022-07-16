@@ -1,8 +1,13 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState, useEffect } from "react";
-import { Layout, Row, Affix, Button } from "antd";
+import { Layout, Row, Affix, Button, Typography } from "antd";
 import { useNavigate, Navigate } from "react-router-dom";
+import {
+  TeamOutlined,
+  EnvironmentOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
 
 import routes from "../routes";
 // import ErrorPage from "./ErrorPage";;
@@ -10,6 +15,7 @@ import routes from "../routes";
 import { colors } from "../styles/colors";
 
 const { Header, Content } = Layout;
+const { Title } = Typography;
 
 const AuthLayout = ({ children }) => {
   const navigate = useNavigate();
@@ -45,6 +51,7 @@ const AuthLayout = ({ children }) => {
         <Header
           style={{
             position: "fixed",
+            height: 50,
             width: "100%",
             zIndex: 3,
             paddingLeft: 18,
@@ -52,7 +59,12 @@ const AuthLayout = ({ children }) => {
             // TODO george match to future destination lines
             borderBottom: `2px dashed ${colors.secondaryText}`,
           }}
-        />
+        >
+          {/* TODO george add font */}
+          <Title level={5} style={{ margin: "12px 16px 0" }}>
+            whereisgeorge
+          </Title>
+        </Header>
 
         {/* Page content */}
         <Content
@@ -65,45 +77,42 @@ const AuthLayout = ({ children }) => {
           {children}
         </Content>
         {/* TODO george add url check - if maps, dont show maps button */}
-        <Row type="flex">
+        <Row type="flex" justify="space-around">
           <Affix offsetBottom={30}>
             <Button
+              shape="circle"
+              icon={<EnvironmentOutlined />}
               onClick={() => navigate(routes.map)}
-              size="small"
-              type="primary"
+              size="large"
               style={{
                 zIndex: 3,
-                marginLeft: 16,
+                margin: 16,
               }}
-            >
-              Map
-            </Button>
+            ></Button>
           </Affix>
           <Affix offsetBottom={30}>
             <Button
+              shape="circle"
+              icon={<TeamOutlined />}
               onClick={() => navigate(routes.friends)}
-              size="small"
-              type="primary"
+              size="large"
               style={{
                 zIndex: 3,
-                marginLeft: 16,
+                margin: 16,
               }}
-            >
-              Friends
-            </Button>
+            ></Button>
           </Affix>
           <Affix offsetBottom={30}>
             <Button
+              shape="circle"
+              icon={<SettingOutlined />}
               onClick={() => navigate(routes.you)}
-              size="small"
-              type="primary"
+              size="large"
               style={{
                 zIndex: 3,
-                marginLeft: 16,
+                margin: 16,
               }}
-            >
-              You
-            </Button>
+            ></Button>
           </Affix>
         </Row>
       </Layout>
