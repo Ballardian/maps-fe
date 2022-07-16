@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Divider,
   Card,
@@ -11,17 +12,16 @@ import {
   Form,
   Input,
   Tooltip,
+  Spin,
 } from "antd";
-import {
-  MailOutlined,
-  AppstoreOutlined,
-  SettingOutlined,
-} from "@ant-design/icons";
+
 import { BASE_ENDPOINT } from "../../config";
 
 import userApi from "../../services/userApi";
 import locationsApi from "../../services/locationsApi";
 import destinationApi from "../../services/destinationApi";
+
+import routes from "../../routes";
 
 const { Option } = Select;
 
@@ -39,6 +39,7 @@ const tailFormItemLayout = {
 };
 
 const YouPage = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   //   TODO george add to redux
@@ -57,7 +58,6 @@ const YouPage = () => {
   const fetchUser = async () => {
     try {
       const response = await userApi.fetchCurrentUser();
-      //   const response = await userApi.fetchUser(1);
       console.log("USER", response);
       setUser(response);
     } catch (error) {
@@ -118,7 +118,8 @@ const YouPage = () => {
 
   return (
     <>
-      {user && (
+      <Divider>You</Divider>
+      {user ? (
         <Form
           className="you-form"
           initialValues={{
@@ -133,8 +134,6 @@ const YouPage = () => {
           scrollToFirstError
           onFinish={onFinish}
         >
-          <Divider>You</Divider>
-
           <Row style={{ margin: 24 }}>
             <Card
               style={{
@@ -146,7 +145,7 @@ const YouPage = () => {
                   src={`${BASE_ENDPOINT}${user?.profileImage?.url}`}
                 />
               }
-              isLoading={isLoading}
+              loading={isLoading}
             >
               <Form.Item
                 name="fullName"
@@ -207,7 +206,7 @@ const YouPage = () => {
               style={{
                 width: "100%",
               }}
-              isLoading={isLoading}
+              loading={isLoading}
             >
               <Form.Item
                 name="contactEmail"
@@ -244,7 +243,7 @@ const YouPage = () => {
                 style={{
                   width: "100%",
                 }}
-                isLoading={isLoading}
+                loading={isLoading}
               >
                 <Form.Item
                   name="location"
@@ -267,14 +266,28 @@ const YouPage = () => {
               </Card>
             </Row>
           )}
-          <Row type="flex" justify="center" style={{ marginBottom: 24 }}>
+          <Row type="flex" justify="space-around" style={{ marginBottom: 24 }}>
             <Form.Item {...tailFormItemLayout}>
-              <Button type="primary" htmlType="submit" loading={isLoading}>
+              <Button htmlType="submit" loading={isLoading}>
                 Update
               </Button>
             </Form.Item>
+            <Button
+              style={{ ...tailFormItemLayout }}
+              loading={isLoading}
+              onClick={() => {
+                localStorage.removeItem("token");
+                navigate(routes.login);
+              }}
+            >
+              Log out
+            </Button>
           </Row>
         </Form>
+      ) : (
+        <Row type="flex" justify="space-around" style={{ marginTop: 80 }}>
+          <Spin size="large" />
+        </Row>
       )}
     </>
   );

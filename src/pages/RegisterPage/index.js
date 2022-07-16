@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { UploadOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   AutoComplete,
   Button,
@@ -67,6 +67,7 @@ const RegisterPage = () => {
   const [isLoading, setLoading] = useState(false);
   const [locations, setLocations] = useState(null);
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchLocations();
@@ -101,7 +102,12 @@ const RegisterPage = () => {
       );
       await registerApi.uploadProfileImage(profileImageFile, response.user.id);
       await destinationApi.addDestination(response.user.id, locationObject);
+      // TODO george add to redux
+      const { jwt } = response;
+      localStorage.setItem("token", jwt);
+      localStorage.setItem("id", response.user.id);
       setLoading(false);
+      navigate(routes.map);
     } catch (error) {
       message.error(`Registration failed: ${error.message}`);
       setLoading(false);

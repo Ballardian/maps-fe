@@ -6,8 +6,9 @@ import ReactMapGL, {
   Marker,
   Popup,
 } from "react-map-gl";
-import { Avatar } from "antd";
+import { Avatar, Spin, Row } from "antd";
 import userApi from "../../services/userApi";
+import friendsApi from "../../services/friendsApi";
 import {
   BASE_ENDPOINT,
   MAPBOX_API_TOKEN,
@@ -53,7 +54,7 @@ const MapPage = () => {
 
   const fetchFriendDestinations = async () => {
     try {
-      const response = await userApi.fetchFriendDestinations();
+      const response = await friendsApi.fetchFriendDestinations();
       setMarkerData(response);
       setLoading(false);
     } catch (error) {
@@ -219,7 +220,7 @@ const MapPage = () => {
 
   return (
     <>
-      {viewport && (
+      {viewport ? (
         <ReactMapGL
           {...viewport}
           style={{ width: "100vw", height: "100vh" }}
@@ -241,6 +242,10 @@ const MapPage = () => {
           {!isLoading && markers}
           {!isLoading && selectedMarker && popUp}
         </ReactMapGL>
+      ) : (
+        <Row type="flex" justify="space-around" style={{ marginTop: 80 }}>
+          <Spin size="large" />
+        </Row>
       )}
     </>
   );

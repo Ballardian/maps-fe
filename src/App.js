@@ -12,7 +12,7 @@ import MapPage from "./pages/MapPage/index";
 import RegisterPage from "./pages/RegisterPage/index";
 import LoginPage from "./pages/LoginPage/index";
 import YouPage from "./pages/YouPage/index";
-// import FriendPage from "./pages/FriendPage/index";
+import FriendPage from "./pages/FriendPage/index";
 
 class App extends React.Component {
   // componentDidMount() {
@@ -32,17 +32,22 @@ class App extends React.Component {
           element={<AuthLayout children={<MapPage />}></AuthLayout>}
         />
         <Route
+          path={routes.friends}
+          element={<AuthLayout children={<FriendPage />}></AuthLayout>}
+        />
+        <Route
           path={routes.you}
           element={<AuthLayout children={<YouPage />}></AuthLayout>}
+        />
+        <Route
+          path={routes.register}
+          element={<PublicLayout children={<RegisterPage />}></PublicLayout>}
         />
         <Route
           path={routes.login}
           element={<PublicLayout children={<LoginPage />}></PublicLayout>}
         />
-        <Route
-          path={routes.register}
-          element={<PublicLayout childre={<RegisterPage />}></PublicLayout>}
-        />
+
         <Route path="*" element={<Navigate to={routes.map} replace={true} />} />
       </Routes>
     );

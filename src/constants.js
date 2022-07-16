@@ -4,4 +4,10 @@ const destinationStatus = {
   FUTURE: "future",
 };
 
-export { destinationStatus };
+const friendStatus = {
+  ACCEPTED: "accepted",
+  BLOCKED: "blocked",
+  REQUESTED: "requested",
+};
+
+export { destinationStatus, friendStatus };
