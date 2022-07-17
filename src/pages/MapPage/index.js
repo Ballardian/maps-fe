@@ -159,6 +159,7 @@ const MapPage = () => {
     const itemData = item.attributes.friend.data.attributes;
     // TODO george update for multiple destinations
     // TODO george move logic to BE
+    // TODO george cant use destination utils as diff data structure
     const locationData =
       item.attributes.friend.data.attributes.destinations.data.find(
         (item) => item.attributes.status === destinationStatus.CURRENT
@@ -196,7 +197,11 @@ const MapPage = () => {
     // TODO george why does this run twice?
     console.log("SEL", selectedMarker);
     if (selectedMarker) {
-      const locationData = selectedMarker.destinations.data[0].attributes;
+      // TODO george move logic to BE
+      // TODO george cant use destination utils as diff data structure
+      const locationData = selectedMarker.destinations.data.find(
+        (item) => item.attributes.status === destinationStatus.CURRENT
+      )?.attributes;
       return (
         <Popup
           longitude={locationData.longitude}

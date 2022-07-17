@@ -1,6 +1,7 @@
 import base from "./base";
 import { USER_ENDPOINT } from "../config";
 import { destinationStatus } from "../constants";
+import destinationUtils from "../utils/destinationUtils";
 
 const qs = require("qs");
 const userQuery = qs.stringify(
@@ -29,9 +30,8 @@ const fetchUser = async (userId) => {
 const fetchCurrentUser = async () => {
   const response = await base.api.get(`${USER_ENDPOINT}/me/?${userQuery}`);
   //   TODO george move logic to BE
-  //   TODO turn into util
-  const currentDestination = response.destinations.find(
-    (item) => item.status === destinationStatus.CURRENT
+  const currentDestination = destinationUtils.getUserCurrentDestination(
+    response.destinations
   );
   response.destinations = [currentDestination];
   return response;

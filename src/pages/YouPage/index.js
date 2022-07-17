@@ -13,6 +13,7 @@ import {
   Input,
   Tooltip,
   Spin,
+  Image,
 } from "antd";
 
 import { BASE_ENDPOINT } from "../../config";
@@ -139,14 +140,15 @@ const YouPage = () => {
               style={{
                 width: "100%",
               }}
-              cover={
-                <img
-                  alt={user?.fullName}
-                  src={`${BASE_ENDPOINT}${user?.profileImage?.url}`}
-                />
-              }
               loading={isLoading}
             >
+              <Row type="flex" justify="center" style={{ marginBottom: 24 }}>
+                <Avatar
+                  size={140}
+                  src={`${BASE_ENDPOINT}${user?.profileImage?.url}`}
+                  alt={user?.fullName}
+                />
+              </Row>
               <Form.Item
                 name="fullName"
                 label="Full name"
