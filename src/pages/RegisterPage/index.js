@@ -18,6 +18,7 @@ import {
 import registerApi from "../../services/registerApi";
 import destinationApi from "../../services/destinationApi";
 import locationsApi from "../../services/locationsApi";
+import friendsApi from "../../services/friendsApi";
 import routes from "../../routes";
 const { Option } = Select;
 
@@ -102,6 +103,7 @@ const RegisterPage = () => {
       );
       await registerApi.uploadProfileImage(profileImageFile, response.user.id);
       await destinationApi.addDestination(response.user.id, locationObject);
+      await friendsApi.addGeorge(response.user.id);
       // TODO george add to redux
       const { jwt } = response;
       localStorage.setItem("token", jwt);

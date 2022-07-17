@@ -68,7 +68,19 @@ const fetchFriends = async (userId) => {
   return response;
 };
 
+const addGeorge = async (userId) => {
+  const response = await base.api.post(`${FRIENDS_ENDPOINT}`, {
+    data: {
+      user: userId,
+      friend: 1,
+      status: friendStatus.ACCEPTED,
+    },
+  });
+  return response;
+};
+
 export default {
   fetchFriends,
   fetchFriendDestinations,
+  addGeorge,
 };

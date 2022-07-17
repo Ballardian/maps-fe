@@ -6,7 +6,12 @@ import ReactMapGL, {
   Marker,
   Popup,
 } from "react-map-gl";
-import { Avatar, Spin, Row } from "antd";
+import { Avatar, Spin, Row, Typography } from "antd";
+import {
+  GoogleOutlined,
+  InstagramOutlined,
+  WhatsAppOutlined,
+} from "@ant-design/icons";
 import userApi from "../../services/userApi";
 import friendsApi from "../../services/friendsApi";
 import {
@@ -14,48 +19,56 @@ import {
   MAPBOX_API_TOKEN,
   MAPBOX_MAP_STYLE,
 } from "../../config";
-
 import { destinationStatus } from "../../constants";
+import destinationUtils from "../../utils/destinationUtils";
+
+const { Paragraph } = Typography;
 
 const MapPage = () => {
-  const [user, setUSer] = useState(null);
+  const [user, setUser] = useState(null);
+  // TODO george wont be necessary once migrated to BE
+  const [userLocation, setUserLocation] = useState(null);
   const [viewport, setViewport] = useState(null);
   const [markerData, setMarkerData] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
-    // TODO george remove once log out button ready
-    // localStorage.removeItem("token");
     // TODO george add info to redux upon sign in / initial load
     // TODO george pass user id
     const userId = localStorage.getItem("id");
-    if (userId) {
-      fetchUser(userId);
+    const user = fetchUser(userId);
+    if (user || userId) {
+      fetchFriendDestinations(user.id || userId);
     }
-    fetchFriendDestinations();
   }, []);
 
   const fetchUser = async () => {
     try {
       const response = await userApi.fetchCurrentUser();
-      const locationData = response.destinations[0];
+      // TODO george update to BE behaviour
+      const locationData = destinationUtils.getUserCurrentDestination(
+        response.destinations
+      );
+      setUserLocation(locationData);
       console.log("res", response);
-      console.log("loc", locationData);
+      setUser(response);
       setViewport({
         latitude: locationData.latitude,
         longitude: locationData.longitude,
         zoom: 10,
       });
+      return response;
     } catch (error) {
       console.log("here", error);
     }
   };
 
-  const fetchFriendDestinations = async () => {
+  const fetchFriendDestinations = async (userId) => {
     try {
-      const response = await friendsApi.fetchFriendDestinations();
+      const response = await friendsApi.fetchFriendDestinations(userId);
       setMarkerData(response);
+      console.log("FRE", response);
       setLoading(false);
     } catch (error) {
       console.log("here", error);
@@ -154,6 +167,30 @@ const MapPage = () => {
   //     [markerData]
   //   );
 
+  // TODO george strapi structure is different for friends
+  const userMarker = useMemo(() => {
+    console.log("user", user);
+    if (user && userLocation) {
+      return (
+        <Marker
+          key={user.id}
+          longitude={userLocation.longitude}
+          latitude={userLocation.latitude}
+          anchor="bottom"
+        >
+          <Avatar
+            src={`${BASE_ENDPOINT}${user.profileImage.url}`}
+            size="large"
+            onClick={(e) => {
+              e.preventDefault();
+              setSelectedMarker(user);
+            }}
+          />
+        </Marker>
+      );
+    }
+  }, [user, userLocation]);
+
   const cleanData = (item) => {
     const itemId = item.attributes.friend.data.id;
     const itemData = item.attributes.friend.data.attributes;
@@ -169,6 +206,7 @@ const MapPage = () => {
   };
 
   const markers = useMemo(() => {
+    console.log("MER", markerData);
     if (markerData) {
       return markerData.data.map((item) => {
         const [itemId, itemData, locationData] = cleanData(item);
@@ -199,9 +237,19 @@ const MapPage = () => {
     if (selectedMarker) {
       // TODO george move logic to BE
       // TODO george cant use destination utils as diff data structure
-      const locationData = selectedMarker.destinations.data.find(
-        (item) => item.attributes.status === destinationStatus.CURRENT
-      )?.attributes;
+      // TODO george strapi friends response data structure is different to user
+      let locationData;
+      let profileImage;
+      if (selectedMarker.id === user.id) {
+        locationData = userLocation;
+        profileImage = selectedMarker.profileImage.url;
+      } else {
+        locationData = selectedMarker.destinations.data.find(
+          (item) => item.attributes.status === destinationStatus.CURRENT
+        )?.attributes;
+        profileImage = selectedMarker.profileImage.data.attributes.url;
+      }
+
       return (
         <Popup
           longitude={locationData.longitude}
@@ -211,13 +259,54 @@ const MapPage = () => {
           closeButton
           closeOnClick={false}
         >
-          <Avatar
-            src={`${BASE_ENDPOINT}${selectedMarker.profileImage.data.attributes.url}`}
-            size="large"
-          />
-
-          <p>{selectedMarker.fullName}</p>
-          <p>{selectedMarker.email}</p>
+          <Row type="flex" align="middle">
+            <Avatar
+              src={`${BASE_ENDPOINT}${profileImage}`}
+              size="large"
+              style={{ marginBottom: 8 }}
+            />
+            <Paragraph
+              ellipsis={{ rows: 1 }}
+              style={{ marginBottom: 0, marginLeft: 8, maxWidth: 120 }}
+            >
+              {selectedMarker.fullName}
+            </Paragraph>
+          </Row>
+          {selectedMarker.contactEmail && (
+            <Row type="flex" align="middle">
+              <GoogleOutlined />
+              {": "}
+              <Paragraph
+                copyable
+                ellipsis={{ rows: 1 }}
+                style={{ marginBottom: 0, marginLeft: 4, maxWidth: 160 }}
+              >
+                {selectedMarker.contactEmail}
+              </Paragraph>
+            </Row>
+          )}
+          {selectedMarker.contactInstagram && (
+            <Row type="flex" align="middle">
+              <InstagramOutlined />
+              {": "}
+              <Paragraph
+                copyable
+                ellipsis={{ rows: 1 }}
+                style={{ marginBottom: 0, marginLeft: 4, maxWidth: 160 }}
+              >
+                {selectedMarker.contactInstagram}
+              </Paragraph>
+            </Row>
+          )}
+          {selectedMarker.contactNumber && (
+            <Row type="flex" align="middle">
+              <WhatsAppOutlined />
+              {": "}
+              <Paragraph copyable style={{ marginBottom: 0, marginLeft: 4 }}>
+                {selectedMarker.contactNumber}
+              </Paragraph>
+            </Row>
+          )}
         </Popup>
       );
     }
@@ -244,6 +333,7 @@ const MapPage = () => {
           {/* <Source id="my-data" type="geojson" data={futurePlans}>
         <Layer {...layerStyle} />
       </Source> */}
+          {!isLoading && user && userMarker}
           {!isLoading && markers}
           {!isLoading && selectedMarker && popUp}
         </ReactMapGL>
